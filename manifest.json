@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2,
+    "name": "TIAGO AJUSTE PONTO",
+    "version": "0.0.1",
+    "content_scripts": [
+        {
+            "matches": [
+                "https://emr-pontorh.whebdc.com.br/gestaoponto-frontend/user/register/today-working"
+            ],
+            "css": [
+                "style.css"
+            ],
+            "js": [
+                "index.js"
+            ]
+        }
+    ]
+}
