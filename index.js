@@ -52,7 +52,8 @@ window.onload = function () {
         data = data.map(e => e.innerHTML)
 
         const hours = [];
-        for (let i = 0; i < data.length; i++) {            
+        for (let i = 0; i < data.length; i++) {
+            console.log(i)
             const current = data[i];
             const next = i + 1;
             let hourObj = {
@@ -80,7 +81,10 @@ window.onload = function () {
         let timeOfHappiness = formatTime(timestrToSec(hours[hours.length - 1].begin) + timestrToSec(dif));
         let remainingTime = formatTime(timestrToSec(dif) - timestrToSec(hours[hours.length - 1].time));
         let worked = formatTime(timestrToSec(sum) + timestrToSec(hours[hours.length - 1].time));    
-      
+        let extra = '00:00:00';
+        let interval = formatTime(timestrToSec(hours[hours.length - 1].end) - timestrToSec(hours[0].begin) - timestrToSec(worked));
+        
+
         let divContainer = document.createElement("div");        
         divContainer.style.color = "#FFFFFF";
         divContainer.style.position = "fixed";
@@ -91,9 +95,16 @@ window.onload = function () {
         
 
         
-        divContainer.appendChild(createCard('Hora de Saida', timeOfHappiness));
-        divContainer.appendChild(createCard('Tempo Trabalhado', worked));
-        divContainer.appendChild(createCard('Tempo Restante', remainingTime));
+        divContainer.appendChild(createCard('Trabalhado', worked));
+        divContainer.appendChild(createCard('Intervalo', interval));        
+        if (timestrToSec(worked) > timestrToSec('08:00:00')) {
+            extra = formatTime(timestrToSec(worked) - timestrToSec('08:00:00'));    
+            divContainer.appendChild(createCard('Hora Extra', extra));
+        } else {        
+            divContainer.appendChild(createCard('Hora de Saida', timeOfHappiness));
+            divContainer.appendChild(createCard('Tempo Restante', remainingTime));
+        }
+        
         
         document.body.appendChild(divContainer);
         
