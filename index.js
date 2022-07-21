@@ -1,87 +1,106 @@
 "use strict"
 
+function timestrToSec(timestr) {
+    var parts = timestr.split(":");
+    return (parts[0] * 3600) +
+        (parts[1] * 60) +
+        (+parts[2]);
+}
+
+function pad(num) {
+    if (num < 10) {
+        return "0" + num;
+    } else {
+        return "" + num;
+    }
+}
+
+function formatTime(seconds) {
+    return [pad(Math.floor(seconds / 3600)),
+    pad(Math.floor(seconds / 60) % 60),
+    pad(seconds % 60),
+    ].join(":");
+}
+
+function createCard(title, value) {
+    let card = document.createElement('div');
+        card.style.textAlign = 'center';
+        card.style.marginLeft = '-1px';
+        card.style.padding = '10px';
+        card.style.paddingTop = '15px';        
+        card.style.display = 'flex';
+        card.style.flexDirection = 'column';
+        card.style.height = '80px';
+    let h1Title = document.createElement('span');
+        h1Title.innerHTML = title;
+        h1Title.style.fontSize = '14px';
+    card.appendChild(h1Title);
+    
+    let h1Value = document.createElement('span');
+        h1Value.innerHTML = value;
+        h1Value.style.fontSize = '18px';
+        card.appendChild(h1Value);        
+
+    return card;
+}
 window.onload = function () {
-    let elements = document.getElementsByClassName('totalizer-text-value');
-    const saidaPrevista = elements[0];
-    const tempoRestante = elements[1];
-    const trabalhando = elements[2];
-    const intervalos = elements[3];
-    const extras = elements[4];
-    const faltas = elements[5];
+    setTimeout(() => {
+        let a = [...document.getElementsByTagName('a')];
+        a = a.filter(e => e.className == 'ng-scope ng-isolate-scope');
+        a = a[0];
+        let data = [...a.getElementsByTagName('span')];
+        data = data.map(e => e.innerHTML)
 
-    //Horas extras 
-    let extra = [...document.getElementsByClassName('title-overtime-highlight')].filter(e => e.innerHTML != 'Hora-Extra').map(e => e.innerHTML);
-    let work = [...document.getElementsByClassName('title-working-highlight')].filter(e => e.innerHTML != 'Trabalhando').map(e => e.innerHTML);
-    let hours = [...extra, ...work].sort().map((e, i) => {
-        let splitted = e.split(' às ');
-        return {
-            begin: `${splitted[0]}:00`,
-            end: `${splitted[1]}:00`
-        }
-    });
-
-    for (let i = 0; i < hours.length; i++) {
-        const hour = hours[i];
-        let nextHour = null;
-        const next = i + 1;
-        if (hours.length > next) {
-            nextHour = hours[next];
-        }
-
-        if (nextHour) {
-            if (nextHour.begin == hour.end) {
-                hours[i] = {
-                    begin: hour.begin,
-                    end: nextHour.end
-                };
-                hours.splice(next, 1);
+        const hours = [];
+        for (let i = 0; i < data.length; i++) {
+            console.log(i)
+            const current = data[i];
+            const next = i + 1;
+            let hourObj = {
+                begin: `${current.trim()}:00`
             }
+            if (data.length > next) {
+                hourObj.end = `${data[next].trim()}:00`;
+                i++;
+            } else {
+                const d = new Date();                
+                hourObj.end = `${d.getHours()}:${d.getMinutes()}:00`;
+            }
+            
+            hourObj.time = formatTime(timestrToSec(hourObj.end) - timestrToSec(hourObj.begin));   
+            hours.push(hourObj);
         }
-    }
+        console.log(hours);
 
-
-    function timestrToSec(timestr) {
-        var parts = timestr.split(":");
-        return (parts[0] * 3600) +
-            (parts[1] * 60) +
-            (+parts[2]);
-    }
-
-    function pad(num) {
-        if (num < 10) {
-            return "0" + num;
-        } else {
-            return "" + num;
+        let sum = '00:00:00';
+        for (let i = 0; i < hours.length - 1; i++) {
+            const hour = hours[i];
+            sum = formatTime(timestrToSec(sum) + timestrToSec(hour.time));
         }
-    }
+    
+        let dif = formatTime(timestrToSec("08:00:00") - timestrToSec(sum));    
+        let timeOfHappiness = formatTime(timestrToSec(hours[hours.length - 1].begin) + timestrToSec(dif));
+        let remainingTime = formatTime(timestrToSec(dif) - timestrToSec(hours[hours.length - 1].time));
+        let worked = formatTime(timestrToSec(sum) + timestrToSec(hours[hours.length - 1].time));    
+        console.log(dif);
+        console.log(timeOfHappiness);
+        console.log(remainingTime);
 
-    function formatTime(seconds) {
-        return [pad(Math.floor(seconds / 3600)),
-        pad(Math.floor(seconds / 60) % 60),
-        pad(seconds % 60),
-        ].join(":");
-    }
+        let divContainer = document.createElement("div");        
+        divContainer.style.color = "#FFFFFF";
+        divContainer.style.position = "fixed";
+        divContainer.style.right = "25%";        
+        divContainer.style.top = "0";
+        divContainer.style.zIndex = 100000000000000000;
+        divContainer.style.display = "flex";
+        
 
-    for (let hour of hours) {
-        hour.time = formatTime(timestrToSec(hour.end) - timestrToSec(hour.begin));
-    }
-
-    let sum = '00:00:00';
-    for (let i = 0; i < hours.length - 1; i++) {
-        const hour = hours[i];
-        sum = formatTime(timestrToSec(sum) + timestrToSec(hour.time));
-    }
-
-    let dif = formatTime(timestrToSec("08:00:00") - timestrToSec(sum));    
-    let timeOfHappiness = formatTime(timestrToSec(hours[hours.length - 1].begin) + timestrToSec(dif));
-    let remainingTime = formatTime(timestrToSec(dif) - timestrToSec(hours[hours.length - 1].time));
-    trabalhando.innerHTML = formatTime(timestrToSec(sum) + timestrToSec(hours[hours.length - 1].time));;
-    tempoRestante.innerHTML = remainingTime;
-    saidaPrevista.innerHTML = timeOfHappiness;
-    document.getElementsByClassName('hour-dashboard-col-right')[0].style.display = 'none';
-    [...document.getElementsByTagName('totalizer')].forEach((e, i) => {
-        if (i > 2) {
-            e.style.display = 'none';
-        }
-    })
+        
+        divContainer.appendChild(createCard('Hora de Saida', timeOfHappiness));
+        divContainer.appendChild(createCard('Tempo Trabalhado', worked));
+        divContainer.appendChild(createCard('Tempo Restante', remainingTime));
+        
+        document.body.appendChild(divContainer);
+        
+    }, 1000)
 }

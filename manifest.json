@@ -1,14 +1,11 @@
 {
     "manifest_version": 2,
-    "name": "TIAGO AJUSTE PONTO",
-    "version": "0.0.1",
+    "name": "Senior Ajuste Ponto",
+    "version": "0.0.2",
     "content_scripts": [
         {
             "matches": [
-                "https://emr-pontorh.whebdc.com.br/gestaoponto-frontend/user/register/today-working"
-            ],
-            "css": [
-                "style.css"
+                "https://emr-pontorh.whebdc.com.br/gestaoponto-frontend/time-adjustment/*"
             ],
             "js": [
                 "index.js"
