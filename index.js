@@ -52,8 +52,7 @@ window.onload = function () {
         data = data.map(e => e.innerHTML)
 
         const hours = [];
-        for (let i = 0; i < data.length; i++) {
-            console.log(i)
+        for (let i = 0; i < data.length; i++) {            
             const current = data[i];
             const next = i + 1;
             let hourObj = {
@@ -70,7 +69,6 @@ window.onload = function () {
             hourObj.time = formatTime(timestrToSec(hourObj.end) - timestrToSec(hourObj.begin));   
             hours.push(hourObj);
         }
-        console.log(hours);
 
         let sum = '00:00:00';
         for (let i = 0; i < hours.length - 1; i++) {
@@ -82,10 +80,7 @@ window.onload = function () {
         let timeOfHappiness = formatTime(timestrToSec(hours[hours.length - 1].begin) + timestrToSec(dif));
         let remainingTime = formatTime(timestrToSec(dif) - timestrToSec(hours[hours.length - 1].time));
         let worked = formatTime(timestrToSec(sum) + timestrToSec(hours[hours.length - 1].time));    
-        console.log(dif);
-        console.log(timeOfHappiness);
-        console.log(remainingTime);
-
+      
         let divContainer = document.createElement("div");        
         divContainer.style.color = "#FFFFFF";
         divContainer.style.position = "fixed";
