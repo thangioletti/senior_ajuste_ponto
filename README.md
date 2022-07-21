@@ -7,6 +7,7 @@
 
 ### Acesse o endereço 
 edge://extensions/
+
 chrome://extensions/
 
 ### Procure pelo item load unpacked
