@@ -6,8 +6,8 @@
 ### Baixe o repositorio em um diretório na maquina 
 
 ### Acesse o endereço 
-[Edge](edge://extensions/)
-[chrome](chrome://extensions/)
+edge://extensions/
+chrome://extensions/
 
 ### Procure pelo item load unpacked
 ![image](https://user-images.githubusercontent.com/19288076/180279289-065ff0d5-2927-40bf-bb28-a4ec7954c100.png)
